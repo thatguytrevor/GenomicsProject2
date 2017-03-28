@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+* Trevor Larson & Josh Korn
+* Genomics Project 2
+*/
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,18 +13,16 @@ namespace Program2
 {
     class Program
     {
+        //Sequence Variables
+        static sequence s1;
+
+        static string[] alphabet;
 
         struct sequence
         {
             public string name;
             public string sequenceString;
         }
-
-        //Sequence Variables
-        static sequence s1;
-
-        static string[] alphabet;
-
 
         static string inputFile = "";
         static string alphabetFile = "";
@@ -55,6 +57,9 @@ namespace Program2
                 if (line.StartsWith(">"))
                     break;
                 s1.sequenceString += line;
+
+                // Need '$' at the end of each string
+                s1.sequenceString += '$';
             }
 
         }
@@ -66,6 +71,16 @@ namespace Program2
 
             line = alphabetReader.ReadLine().Trim().ToLower();
             alphabet = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public void buildSuffixTree(string inputString)
+        {
+            // make sure string isn't empty
+            if (String.IsNullOrEmpty(inputString))
+            {
+                throw new ArgumentNullException();
+            }
+
 
         }
     }
