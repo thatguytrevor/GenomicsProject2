@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Program2
 {
-    class SuffixTree
+    public class SuffixTree
     {
         // Member Variables
         Node root;
@@ -27,9 +27,22 @@ namespace Program2
         // Method that builds suffix tree based on alphabet / Quadratic Time. 
         // TODO: Change this to 'FindPath' method, create linear algorithm.
         /// </summary>
-        static void buildTree()
+        public void buildTree()
         {
+            Node nodePtr = root;
+            int startIndex = 0;
+            for(int i=0; i < originalString.Length; i++)    // Loop through characters in the string
+            {
+                // Check string[i]
+                string subString = originalString.Substring(startIndex, originalString.Length - startIndex);
 
+                // compare each character in the substring we are inserting
+                foreach (char c in subString)
+                {
+                    // see if our nodePtr's pointer with label "c" is null. If it is, create it.
+                    // If not null, move to it
+                }
+            }
         }
     }
 }

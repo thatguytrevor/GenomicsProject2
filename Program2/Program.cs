@@ -37,6 +37,7 @@ namespace Program2
             populateAlphabet();
 
             Console.WriteLine("Finished Execution");
+
         }
 
         static void populateSequences()

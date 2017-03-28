@@ -11,7 +11,7 @@ namespace Program2
         // Member Variables
         int[] edgeLabel;    // used to hold indices of string from parent to here
         int _stringDepth;     // index through the string
-        List<Node> pointers;    // Node pointers, one for each letter in our alphabet + $
+        public List<Node> pointers;    // Node pointers, one for each letter in our alphabet + $
         string label;   // label to be used for string on the node
 
         public int StringDepth
@@ -27,13 +27,34 @@ namespace Program2
             }
         }
 
+        public string Label
+        {
+            get
+            {
+                return label;
+            }
+
+            set
+            {
+                label = value;
+            }
+        }
+
+        public Node()
+        {
+            Label = null;
+            edgeLabel = null;
+            StringDepth = 0;
+            pointers = new List<Node>();
+        }
+
         /// <summary>
         /// Constructor accepting a character for the label -- shouldn't really be used
         /// </summary>
         /// <param name="l"></param>
         public Node(string l)
         {
-            label = l;
+            Label = l;
             edgeLabel[0] = 0;
             edgeLabel[1] = 0;
             StringDepth = 0;
@@ -47,7 +68,7 @@ namespace Program2
         /// <param name="alphabet"></param>
         public Node(string l, string[] alphabet) // Constructor accepting an alphabet for pointers
         {
-            label = l;
+            Label = l;
             edgeLabel[0] = 0;
             edgeLabel[1] = 0;
             StringDepth = 0;
@@ -57,6 +78,8 @@ namespace Program2
                 Node newNode = new Node(s);
                 pointers.Add(newNode);
             }
+            Node moneyNode = new Program2.Node("$");
+            pointers.Add(moneyNode);
         }
 
         public void setEdgeLabels(int a, int b)
