@@ -31,7 +31,7 @@ namespace Program2
         /// Constructor accepting a character for the label -- shouldn't really be used
         /// </summary>
         /// <param name="l"></param>
-        Node(string l)
+        public Node(string l)
         {
             label = l;
             edgeLabel[0] = 0;
@@ -45,7 +45,7 @@ namespace Program2
         /// </summary>
         /// <param name="l"></param>
         /// <param name="alphabet"></param>
-        Node(string l, string[] alphabet) // Constructor accepting an alphabet for pointers
+        public Node(string l, string[] alphabet) // Constructor accepting an alphabet for pointers
         {
             label = l;
             edgeLabel[0] = 0;
