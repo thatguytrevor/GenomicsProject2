@@ -15,8 +15,9 @@ namespace Program2
     {
         //Sequence Variables
         static sequence s1;
+        SuffixTree ST;
 
-        static string[] alphabet;
+        static char[] alphabet;
 
         struct sequence
         {
@@ -31,10 +32,15 @@ namespace Program2
         {
             inputFile = args[0];
             alphabetFile = args[1];
+            
 
             populateSequences();
 
             populateAlphabet();
+
+            SuffixTree ST = new SuffixTree(s1.sequenceString, alphabet);
+            ST.buildTree(ST.root);
+
 
             Console.WriteLine("Finished Execution");
 
@@ -71,7 +77,16 @@ namespace Program2
             string line;
 
             line = alphabetReader.ReadLine().Trim().ToLower();
-            alphabet = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] stringAlph = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+
+            alphabet = new char[stringAlph.Length];
+            int count = 0;
+            foreach (string a in stringAlph)
+            {
+                alphabet[count] = a[0];
+                count++;
+            }
+
         }
 
         public void buildSuffixTree(string inputString)
