@@ -9,10 +9,11 @@ namespace Program2
     public class Node
     {
         // Member Variables
-        int[] edgeLabel;    // used to hold indices of string from parent to here
+        public int[] edgeLabel;    // used to hold indices of string from parent to here
         int _stringDepth;     // index through the string
-        List<Node> pointers;    // Node pointers, one for each letter in our alphabet + $
-        string label;   // label to be used for string on the node
+        public Dictionary<char, Node> pointers;
+        public Node parent;
+        public Node child;
 
         public int StringDepth
         {
@@ -26,18 +27,15 @@ namespace Program2
                 _stringDepth = value;
             }
         }
+        
 
-        /// <summary>
-        /// Constructor accepting a character for the label -- shouldn't really be used
-        /// </summary>
-        /// <param name="l"></param>
-        public Node(string l)
+        public Node()
         {
-            label = l;
-            edgeLabel[0] = 0;
-            edgeLabel[1] = 0;
+            edgeLabel = new int[2];
             StringDepth = 0;
-            pointers = new List<Node>();
+            pointers = new Dictionary<char, Node>();
+            parent = null;
+            child = null;
         }
 
         /// <summary>
@@ -45,18 +43,18 @@ namespace Program2
         /// </summary>
         /// <param name="l"></param>
         /// <param name="alphabet"></param>
-        public Node(string l, string[] alphabet) // Constructor accepting an alphabet for pointers
+        public Node(char[] alphabet) // Constructor accepting an alphabet for pointers
         {
-            label = l;
-            edgeLabel[0] = 0;
-            edgeLabel[1] = 0;
+            //Label = l;
+            edgeLabel = new int[2];
             StringDepth = 0;
+            pointers = new Dictionary<char, Node>();
 
-            foreach (string s in alphabet)  // build the pointers
+            foreach (char s in alphabet)  // build the pointers
             {
-                Node newNode = new Node(s);
-                pointers.Add(newNode);
+                pointers.Add(s, null);
             }
+            pointers.Add('$', null);
         }
 
         public void setEdgeLabels(int a, int b)
