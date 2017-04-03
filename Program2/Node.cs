@@ -13,7 +13,9 @@ namespace Program2
         int _stringDepth;     // index through the string
         public Dictionary<char, Node> pointers;
         public Node parent;
-        public Node child;
+        //public Node child;
+        public Node suffixLink;
+        public int nodeID;
 
         public int StringDepth
         {
@@ -35,7 +37,7 @@ namespace Program2
             StringDepth = 0;
             pointers = new Dictionary<char, Node>();
             parent = null;
-            child = null;
+            suffixLink = null;
         }
 
         /// <summary>
@@ -48,6 +50,8 @@ namespace Program2
             //Label = l;
             edgeLabel = new int[2];
             StringDepth = 0;
+            parent = null;
+            suffixLink = null;
             pointers = new Dictionary<char, Node>();
 
             foreach (char s in alphabet)  // build the pointers

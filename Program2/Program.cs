@@ -39,11 +39,11 @@ namespace Program2
             populateAlphabet();
 
             SuffixTree ST = new SuffixTree(s1.sequenceString, alphabet);
-            ST.buildTree(ST.root);
+            ST.buildTree();
 
 
             Console.WriteLine("Finished Execution");
-
+            Console.ReadLine();
         }
 
         static void populateSequences()
