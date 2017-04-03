@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace Program2
         char[] _alphabet;
         Node previousNode;  // Used to keep track of "i-1" inserted node.
         int leafCounter = 1;
+        Dictionary<int, Node> bwtIndex;
 
         /// <summary>
         /// Constructor taking the string as input and assigns the root node with it's pointers.
@@ -26,11 +28,11 @@ namespace Program2
             root = new Node(alphabet);
             root.suffixLink = root;
             previousNode = null;
+            bwtIndex = new Dictionary<int, Node>();
         }
 
         /// <summary>
-        // Method that builds suffix tree based on alphabet / Quadratic Time. 
-        // TODO: Change this to 'FindPath' method, create linear algorithm.
+        // Method that builds suffix tree from a given node given an input
         /// </summary>
         public void findPath(Node n, string input)
         {
@@ -46,7 +48,7 @@ namespace Program2
             if (nodePtr.pointers[c] == null)    // if the character doesn't exist
             {
                 Node temp = new Node(_alphabet);
-                temp.StringDepth = nodePtr.StringDepth + 1;
+                temp.StringDepth = originalString.Length;
                 temp.setEdgeLabels(length, originalString.Length);
                 temp.parent = nodePtr;
                 nodePtr.pointers[c] = temp;
@@ -59,31 +61,57 @@ namespace Program2
             {
                 Node temp = nodePtr.pointers[c];
                 int counter = 0;
-                foreach (char ch in input)
+                for (int i = 0; i < input.Length - 1; i++)
                 {
+                    char ch = input[i];
                     string s = originalString.Substring(temp.edgeLabel[0], temp.edgeLabel[1] - temp.edgeLabel[0]);
                     if (ch == s[counter])
                     {
                         counter++;
+                        if (s.Length <= counter)
+                        {
+                            if (temp.pointers[input[i+1]] == null)
+                            {
+
+
+                                Node newerNode = new Node(_alphabet);
+                                newerNode.setEdgeLabels(length + counter, originalString.Length);
+                                newerNode.StringDepth = originalString.Length;
+                                newerNode.parent = temp;
+                                temp.pointers[input[i+1]] = newerNode;
+
+                                previousNode = newerNode;
+                                newerNode.nodeID = leafCounter;
+                                leafCounter++;
+                                break;
+                            }
+                            else
+                            {
+                                temp = temp.pointers[input[i + 1]];
+                                c = input[i + 1];
+                                counter = 0;
+                            }
+                        }
                     }
                     else
                     {
                         Node newNode = new Node(_alphabet);
-                        newNode.StringDepth = temp.StringDepth;
+                        newNode.StringDepth = temp.edgeLabel[0] + counter;
                         newNode.parent = temp.parent;
                         newNode.setEdgeLabels(temp.edgeLabel[0], temp.edgeLabel[0] + counter);
+                        newNode.nodeID = -1;
 
                         temp.parent.pointers[c] = newNode;
                         temp.parent = newNode;
                         temp.setEdgeLabels(newNode.edgeLabel[1], temp.edgeLabel[1]);
-                        temp.StringDepth++;
-                        
+                        temp.StringDepth = temp.edgeLabel[1];
+
 
                         newNode.pointers[s[counter]] = temp;
 
                         Node newerNode = new Node(_alphabet);
                         newerNode.setEdgeLabels(length + counter, originalString.Length);
-                        newerNode.StringDepth = newNode.StringDepth + 1;
+                        newerNode.StringDepth = originalString.Length;
                         newerNode.parent = newNode;
                         newNode.pointers[ch] = newerNode;
 
@@ -197,37 +225,45 @@ namespace Program2
                         int betaStart = previousNode.parent.edgeLabel[0] + 1;
                         int hopLength = 0;
 
-                        do
+                        if (betaLengh == 0)
                         {
-                            char c = newString[0];
-                            if (hopper.pointers[c] != null)
+                            findPath(hopper, subString);
+                        }
+                        else
+                        {
+
+                            do
                             {
-                                int lengthCheck = betaLengh - (hopper.pointers[c].edgeLabel[1] - hopper.pointers[c].edgeLabel[0]);
-
-                                // Check if we would land in the middle of an edge
-                                if (lengthCheck <= 0)
+                                char c = newString[0];
+                                if (hopper.pointers[c] != null)
                                 {
-                                    findPath(hopper, subString.Substring(hopLength));
-                                    betaLengh = 0;
-                                }
+                                    int lengthCheck = betaLengh - (hopper.pointers[c].edgeLabel[1] - hopper.pointers[c].edgeLabel[0]);
 
-                                else if (lengthCheck == 0)
-                                {
-                                    hopper = hopper.pointers[c];
+                                    // Check if we would land in the middle of an edge
+                                    if (lengthCheck <= 0)
+                                    {
+                                        findPath(hopper, subString.Substring(hopLength));
+                                        betaLengh = 0;
+                                    }
 
-                                    findPath(hopper, originalString.Substring(hopper.edgeLabel[1] + 1));
-                                }
+                                    else if (lengthCheck == 0)
+                                    {
+                                        hopper = hopper.pointers[c];
 
-                                // Can get to next node
-                                else
-                                {
-                                    hopper = hopper.pointers[c];
-                                    betaStart = betaStart - (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
-                                    betaLengh = betaLengh - (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
-                                    hopLength = hopLength + (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
+                                        findPath(hopper, originalString.Substring(hopper.edgeLabel[1] + 1));
+                                    }
+
+                                    // Can get to next node
+                                    else
+                                    {
+                                        hopper = hopper.pointers[c];
+                                        betaStart = betaStart - (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
+                                        betaLengh = betaLengh - (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
+                                        hopLength = hopLength + (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
+                                    }
                                 }
-                            }
-                        } while (betaLengh != 0);
+                            } while (betaLengh != 0);
+                        }
                     }
                 }
 
@@ -237,5 +273,50 @@ namespace Program2
                 }
             }
         }
+
+        /// <summary>
+        /// Method that displays the children of a given node 'U'
+        /// </summary>
+        /// <param name="u"></param>
+        public void displayChildren(Node u)
+        {
+            foreach (char c in _alphabet)
+            {
+                if (u.pointers[c] != null)
+                {
+                    Console.WriteLine(u.pointers[c].nodeID);
+                }
+            }
+        }
+
+
+        public void dfsTraversal(Node n)
+        {
+            Console.WriteLine(n.StringDepth);
+            foreach (char c in _alphabet)
+            {
+                if (n.pointers[c] != null)
+                {
+                    dfsTraversal(n.pointers[c]);
+                }
+            }
+        }
+
+        public void printBWT(Node n)
+        {
+            if (n.nodeID > 0)
+            {
+                //Console.WriteLine(originalString[n.nodeID - 1]);
+                Console.WriteLine(originalString[n.edgeLabel[0]]);
+            }
+            foreach (char c in _alphabet)
+            {
+                if (n.pointers[c] != null)
+                {
+                    printBWT(n.pointers[c]);
+                }
+            }
+        }
+        
     }
 }

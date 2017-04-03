@@ -40,8 +40,8 @@ namespace Program2
 
             SuffixTree ST = new SuffixTree(s1.sequenceString, alphabet);
             ST.buildTree();
-
-
+            ST.dfsTraversal(ST.root);
+            //ST.printBWT(ST.root);
             Console.WriteLine("Finished Execution");
             Console.ReadLine();
         }
@@ -79,25 +79,15 @@ namespace Program2
             line = alphabetReader.ReadLine().Trim().ToLower();
             string[] stringAlph = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
-            alphabet = new char[stringAlph.Length];
-            int count = 0;
+            alphabet = new char[stringAlph.Length + 1];
+            alphabet[0] = '$';
+            int count = 1;
             foreach (string a in stringAlph)
             {
                 alphabet[count] = a[0];
                 count++;
             }
-
-        }
-
-        public void buildSuffixTree(string inputString)
-        {
-            // make sure string isn't empty
-            if (String.IsNullOrEmpty(inputString))
-            {
-                throw new ArgumentNullException();
-            }
-
-
+            
         }
     }
 }

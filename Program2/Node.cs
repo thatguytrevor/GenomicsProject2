@@ -58,7 +58,6 @@ namespace Program2
             {
                 pointers.Add(s, null);
             }
-            pointers.Add('$', null);
         }
 
         public void setEdgeLabels(int a, int b)
