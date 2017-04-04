@@ -40,8 +40,9 @@ namespace Program2
 
             SuffixTree ST = new SuffixTree(s1.sequenceString, alphabet);
             ST.buildTree();
-            ST.dfsTraversal(ST.root);
-            //ST.printBWT(ST.root);
+            //ST.dfsTraversal(ST.root);
+            ST.printBWT(ST.root);
+            Console.WriteLine("leaves:" + ST.leafCounter);
             Console.WriteLine("Finished Execution");
             Console.ReadLine();
         }
