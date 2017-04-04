@@ -52,8 +52,8 @@ namespace Program2
                 temp.StringDepth = originalString.Length;
                 temp.setEdgeLabels(length, originalString.Length);
                 temp.parent = nodePtr;
-                nodePtr.pointers[c] = temp;
                 temp.nodeID = leafCounter;
+                nodePtr.pointers[c] = temp;
                 leafCounter++;
                 previousNode = temp;
             }
@@ -62,6 +62,7 @@ namespace Program2
             {
                 Node temp = nodePtr.pointers[c];    // Move to that character pointer
                 int counter = 0;
+
                 for (int i = 0; i < input.Length; i++)
                 {
                     char ch = input[i]; // Get the first character
@@ -180,119 +181,35 @@ namespace Program2
                         findPath(root, subString);
                     }
 
-                    // Case 3: previousNode.parent 'U' has no suffix link, 'U'.parent is not the root
-                    else if (previousNode.parent.suffixLink == null && root != previousNode.parent.parent)
-                    {
-                        Node U = previousNode.parent.parent;
-                        Node hopper = U.suffixLink;
-
-                        int betaLengh = previousNode.parent.edgeLabel[1] - previousNode.parent.edgeLabel[0];
-                        string betaString = originalString.Substring(previousNode.parent.edgeLabel[0], betaLengh);
-                        int betaStart = previousNode.parent.edgeLabel[0];
-                        int hopLength = 0;
-
-                        if (betaLengh == 0)
-                        {
-                            previousNode.parent.suffixLink = hopper;    // set suffix link
-                            findPath(hopper, subString);
-                        }
-
-                        else
-                        {
-                            while (betaLengh != 0)  // Loop until we exhaust the length of Beta (newString)
-                            {
-                                char c = betaString[hopLength];
-                                if (hopper.pointers[c] != null)
-                                {
-                                    int lengthCheck = betaLengh - (hopper.pointers[c].edgeLabel[1] - hopper.pointers[c].edgeLabel[0]);
-
-                                    // Check if we would land in the middle of an edge -- break, set suffix link, find path
-                                    if (lengthCheck < 0)
-                                    {
-                                        hopper = hopper.pointers[c];
-                                        string path = originalString.Substring(hopper.edgeLabel[0], hopper.edgeLabel[1] - hopper.edgeLabel[0]);
-                                        for (int j = 0; j < subString.Length; j++)
-                                        {
-                                            if (subString[j] == path[j])
-                                            {
-                                                continue;
-                                            }
-                                            else
-                                            {
-                                                // create new internal node
-                                                Node newInternal = new Node(_alphabet);
-                                                newInternal.StringDepth = hopper.edgeLabel[0] + j;
-                                                newInternal.parent = hopper.parent;
-                                                newInternal.setEdgeLabels(hopper.edgeLabel[0], hopper.edgeLabel[0] + j);
-                                                newInternal.nodeID = -1;
-
-                                                // create suffix link
-                                                previousNode.parent.suffixLink = newInternal;
-
-                                                hopper.parent.pointers[path[0]] = newInternal;
-                                                hopper.parent = newInternal;
-                                                newInternal.pointers[path[j]] = hopper;
-                                                hopper.setEdgeLabels(newInternal.edgeLabel[1], hopper.edgeLabel[1]);
-                                                hopper.StringDepth = hopper.edgeLabel[1];
-
-                                                Node newLeafNode = new Node(_alphabet);
-                                                newLeafNode.setEdgeLabels(originalString.Length - subString.Length + j, originalString.Length);
-                                                newLeafNode.StringDepth = originalString.Length;
-                                                newLeafNode.parent = newInternal;
-                                                newInternal.pointers[subString[j]] = newLeafNode;
-
-                                                previousNode = newLeafNode;
-                                                newLeafNode.nodeID = leafCounter;
-                                                leafCounter++;
-                                                break;
-                                            }
-                                        }
-                                        //findPath(hopper, subString.Substring(hopLength));
-                                        betaLengh = 0;
-                                    }
-
-                                    else if (lengthCheck == 0)
-                                    {
-                                        hopper = hopper.pointers[c];
-                                        hopLength = hopLength + (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
-                                        previousNode.parent.suffixLink = hopper;
-                                        findPath(hopper, subString.Substring(hopLength));
-                                        break;
-                                    }
-
-                                    // Can get to next node
-                                    else
-                                    {
-                                        hopper = hopper.pointers[c];
-                                        betaStart = betaStart - (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
-                                        betaLengh = betaLengh - (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
-                                        hopLength = hopLength + (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
-                                        subString = subString.Substring(hopLength);
-                                    }
-                                }
-
-                                else
-                                {
-                                    
-                                }
-
-
-                            }
-                        }
-                    }
-
                     // Case 4: Parent has no suffix link and U' is the root
-                    else if (previousNode.parent.suffixLink == null && root == previousNode.parent.parent)
+                    else if (previousNode.parent.suffixLink == null)
                     {
                         Node U = previousNode.parent.parent;
                         Node hopper = U.suffixLink; // hopper is the root
 
-                        int betaLengh = previousNode.parent.edgeLabel[1] - previousNode.parent.edgeLabel[0] - 1;
-                        string newString = originalString.Substring(previousNode.parent.edgeLabel[0] + 1, betaLengh);
-                        int betaStart = previousNode.parent.edgeLabel[0] + 1;
-                        int hopLength = 0;
 
-                        if (betaLengh == 0)
+                        int betaLength;
+                        string betaString;
+                        int betaStart;
+                        int hopLength;
+
+
+                        if (root != previousNode.parent.parent) //if root does not equal u beta is full string
+                        {
+                            betaLength = previousNode.parent.edgeLabel[1] - previousNode.parent.edgeLabel[0];
+                            betaString = originalString.Substring(previousNode.parent.edgeLabel[0], betaLength);
+                            betaStart = previousNode.parent.edgeLabel[0];
+                            hopLength = 0;
+                        }
+                        else //root does equal u, full string = x+beta, use only beta
+                        {
+                            betaLength = previousNode.parent.edgeLabel[1] - previousNode.parent.edgeLabel[0] - 1;
+                            betaString = originalString.Substring(previousNode.parent.edgeLabel[0] + 1, betaLength);
+                            betaStart = previousNode.parent.edgeLabel[0] + 1;
+                            hopLength = 0;
+                        }
+
+                        if (betaLength == 0)
                         {
                             previousNode.parent.suffixLink = hopper;    // set suffix link
                             findPath(hopper, subString);
@@ -302,10 +219,10 @@ namespace Program2
 
                             do
                             {
-                                char c = newString[hopLength];
+                                char c = betaString[hopLength];
                                 if (hopper.pointers[c] != null)
                                 {
-                                    int lengthCheck = betaLengh - (hopper.pointers[c].edgeLabel[1] - hopper.pointers[c].edgeLabel[0]);
+                                    int lengthCheck = betaLength - (hopper.pointers[c].edgeLabel[1] - hopper.pointers[c].edgeLabel[0]);
 
                                     // Check if we would land in the middle of an edge
                                     if (lengthCheck < 0)
@@ -382,7 +299,7 @@ namespace Program2
                                             }
                                         }
                                         //findPath(hopper, subString.Substring(hopLength));
-                                        betaLengh = 0;
+                                        betaLength = 0;
                                     }
 
                                     else if (lengthCheck == 0)
@@ -399,13 +316,19 @@ namespace Program2
                                     {
                                         hopper = hopper.pointers[c];
                                         betaStart = betaStart - (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
-                                        betaLengh = betaLengh - (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
+                                        betaLength = betaLength - (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
                                         hopLength = hopLength + (hopper.edgeLabel[1] - hopper.edgeLabel[0]);
                                         subString = subString.Substring(hopLength);
                                         //newString = newString.Substring(betaStart);
                                     }
                                 }
-                            } while (betaLengh != 0);
+                                else
+                                {
+                                    //previousNode.parent.suffixLink = hopper;
+                                    //findPath(hopper, subString.Substring(hopLength));
+                                    //break;
+                                }
+                            } while (betaLength != 0);
                         }
                     }
                 }
