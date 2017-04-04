@@ -153,7 +153,7 @@ namespace Program2
         {
             for (int i = 0; i < originalString.Length; i++)
             {
-                if (i == 37)
+                if (i == 30)
                 {
                     Console.WriteLine();
                 }
@@ -186,7 +186,7 @@ namespace Program2
                     {
                         Node U = previousNode.parent.parent;
                         Node hopper = U.suffixLink; // hopper is the root
-
+                        subString = subString.Substring(hopper.edgeLabel[1]);
 
                         int betaLength;
                         string betaString;
@@ -213,6 +213,7 @@ namespace Program2
                         {
                             previousNode.parent.suffixLink = hopper;    // set suffix link
                             findPath(hopper, subString);
+                            
                         }
                         else
                         {
@@ -324,9 +325,9 @@ namespace Program2
                                 }
                                 else
                                 {
-                                    //previousNode.parent.suffixLink = hopper;
-                                    //findPath(hopper, subString.Substring(hopLength));
-                                    //break;
+                                    previousNode.parent.suffixLink = hopper;
+                                    findPath(hopper, subString.Substring(hopLength));
+                                    break;
                                 }
                             } while (betaLength != 0);
                         }

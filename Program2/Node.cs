@@ -64,6 +64,7 @@ namespace Program2
         {
             edgeLabel[0] = a;
             edgeLabel[1] = b;
+
         }
 
     }
