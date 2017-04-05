@@ -153,7 +153,7 @@ namespace Program2
         {
             for (int i = 0; i < originalString.Length; i++)
             {
-                if (i == 30)
+                if (i == 28)
                 {
                     Console.WriteLine();
                 }
@@ -186,6 +186,7 @@ namespace Program2
                     {
                         Node U = previousNode.parent.parent;
                         Node hopper = U.suffixLink; // hopper is the root
+
                         subString = subString.Substring(hopper.edgeLabel[1]);
 
                         int betaLength;
@@ -234,7 +235,7 @@ namespace Program2
                                         for (int j = 0; j < subString.Length; j++)
                                         {
 
-                                            if (path.Length <= counter)    // If we are out of edge label and need to move to a new node
+                                            if (path.Length <= j)    // If we are out of edge label and need to move to a new node
                                             {
                                                 if (hopper.pointers[subString[j]] == null)      // If there is no node for us to move to
                                                 {

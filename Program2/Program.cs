@@ -32,7 +32,7 @@ namespace Program2
         {
             inputFile = args[0];
             alphabetFile = args[1];
-            
+
 
             populateSequences();
 
@@ -67,8 +67,8 @@ namespace Program2
                 s1.sequenceString += line;
 
                 // Need '$' at the end of each string
-                s1.sequenceString += '$';
             }
+            s1.sequenceString += '$';
 
         }
 
@@ -88,7 +88,7 @@ namespace Program2
                 alphabet[count] = a[0];
                 count++;
             }
-            
+
         }
     }
 }
